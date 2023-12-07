@@ -33,7 +33,7 @@ public class UserController {
         List<Role> listRoles = service.listRows();
 
         User user = new User();
-        user.setEnabled(true);
+        user.setEnabled(true);      // by default user is enabled
 
         model.addAttribute("user", user);
         model.addAttribute("listRoles", listRoles);
@@ -43,6 +43,7 @@ public class UserController {
 
     @PostMapping("/users/save")
     public String saveUser(User user, RedirectAttributes redirectAttributes) {
+        // REMOVE AFTER TESTING
         System.out.println(user);
 
         service.save(user);

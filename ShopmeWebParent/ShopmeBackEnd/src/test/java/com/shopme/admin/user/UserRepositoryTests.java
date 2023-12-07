@@ -101,4 +101,13 @@ public class UserRepositoryTests {
 
 		assertThat(repo.findById(userId).isEmpty());
 	}
+	
+	@Test
+	public void testGetUserByEmail() {
+	    String email = "ravi@gmail.com";
+	    
+	    User user = repo.getUserByEmail(email);
+	    
+	    assertThat(user).isNotNull();
+	}
 }
