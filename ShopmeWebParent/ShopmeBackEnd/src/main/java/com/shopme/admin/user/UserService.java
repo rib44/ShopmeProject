@@ -31,7 +31,25 @@ public class UserService {
     }
 
     public void save(User user) {
-        encodePassword(user);
+        boolean isUpdatingUser = (user.getId() != null);
+
+        // for old users, to update
+        if (isUpdatingUser) {
+            User existingUser = userRepo.findById(user.getId()).get();
+
+            if (user.getPassword().isEmpty()) {
+                // no password change
+                user.setPassword(existingUser.getPassword());
+            } else {
+                // password change
+                encodePassword(user);
+            }
+        }
+        // for new users
+        else {
+            encodePassword(user);
+        }
+
         userRepo.save(user);
     }
 
@@ -44,6 +62,7 @@ public class UserService {
     public boolean isEmailUnique(Integer id, String email) {
         User userByEmail = userRepo.getUserByEmail(email);
 
+        // no email is found with the given email, so email is unique
         if (userByEmail == null) {
             return true;
         }
@@ -64,7 +83,7 @@ public class UserService {
             }
         }
 
-        return userByEmail == null;
+        return true;
     }
 
     public User get(Integer id) throws UserNotFoundException {
