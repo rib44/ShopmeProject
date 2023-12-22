@@ -183,9 +183,7 @@
 
                 <!-- 1million bytes = 1024*1024 = 1048576 -->
                 if (fileSize > 1048576) {
-                    this.setCustomValididty(
-                        "You must choose an image less than 1MB!"
-                    );
+                    this.setCustomValididty("You must choose an image less than 1MB!");
                     this.reportValidity();
                 } else {
                     this.setCustomValidity("");

@@ -52,6 +52,7 @@ public class UserController {
     public String saveUser(User user, RedirectAttributes redirectAttributes,
             @RequestParam("image") MultipartFile multipartFile)
             throws IOException {
+
         if (!multipartFile.isEmpty()) {
             String fileName = StringUtils
                     .cleanPath(multipartFile.getOriginalFilename());
@@ -65,8 +66,8 @@ public class UserController {
         } else {
             if (user.getPhotos().isEmpty()) {
                 user.setPhotos(null);
-                service.save(user);
             }
+            service.save(user);
         }
 
         redirectAttributes.addFlashAttribute("message",
@@ -114,6 +115,7 @@ public class UserController {
     public String updateUserEnabledStatus(@PathVariable(name = "id") Integer id,
             @PathVariable(name = "status") boolean enabled,
             RedirectAttributes redirectAttributes) {
+
         service.updateEnabledStatus(id, enabled);
         String status = enabled ? "enabled" : "disabled";
         String message = "The user ID " + id + " has been " + status;
