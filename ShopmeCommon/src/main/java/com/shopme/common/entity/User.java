@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "users")
@@ -40,15 +41,10 @@ public class User {
     private boolean enabled;
 
     @ManyToMany
-    @JoinTable(
-            name = "users_roles", 
-            joinColumns = @JoinColumn(name = "user_id"), 
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-    
 
-    // default constructor
+    // default constructor (mandatory)
     public User() {
     }
 
@@ -135,6 +131,15 @@ public class User {
         return "User [id=" + id + ", email=" + email + ", firstName="
                 + firstName + ", lastName=" + lastName + ", roles=" + roles
                 + "]";
+    }
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (id == null || photos == null) {
+            return "/images/default-user.png";
+        }
+
+        return "/user-photos/" + this.id + "/" + this.photos;
     }
 
 }
