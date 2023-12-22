@@ -46,9 +46,8 @@ public class UserService {
                 // password change
                 encodePassword(user);
             }
-        }
-        // for new users
-        else {
+        } else {
+            // for new users
             encodePassword(user);
         }
 

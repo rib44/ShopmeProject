@@ -62,9 +62,13 @@ public class UserController {
 
             FileUploadUtil.cleanDr(uploadDir);
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        } else {
+            if (user.getPhotos().isEmpty()) {
+                user.setPhotos(null);
+                service.save(user);
+            }
         }
 
-        // service.save(user);
         redirectAttributes.addFlashAttribute("message",
                 "The user has been saved successfully.");
 
@@ -74,6 +78,7 @@ public class UserController {
     @GetMapping("/users/edit/{id}")
     public String editUser(@PathVariable(name = "id") Integer id, Model model,
             RedirectAttributes redirectAttributes) {
+
         try {
             User user = service.get(id);
             List<Role> listRoles = service.listRows();
