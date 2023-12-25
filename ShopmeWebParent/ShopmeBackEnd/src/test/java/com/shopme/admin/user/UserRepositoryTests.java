@@ -140,7 +140,7 @@ public class UserRepositoryTests {
 
     @Test
     public void testListFirstPage() {
-        int pageNumber = 1; // page number is 0 based
+        int pageNumber = 0; // page number is 0 based
         int pageSize = 4; // 4 elements per page
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
