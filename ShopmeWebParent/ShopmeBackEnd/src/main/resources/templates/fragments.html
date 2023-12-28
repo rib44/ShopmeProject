@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 </head>
 <body>
+    <!-- In user table -->
     <th th:fragment="column_link(fieldName, columnLabel)">
        <a th:href="@{'/users/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}" 
            class="text-white"> 
@@ -13,5 +14,13 @@
        <span th:if="${sortField == fieldName}" th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}">
        </span>
    </th>
+   
+   <!-- In pagination -->
+   <a th:fragment="page_link(pageNum, label)"
+        class="page-link"
+        th:href="@{'/users/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}"  
+    >
+    [[${label}]]
+    </a>
 </body>
 </html>
