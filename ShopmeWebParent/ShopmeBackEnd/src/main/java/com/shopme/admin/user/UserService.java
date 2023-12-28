@@ -19,7 +19,8 @@ import com.shopme.common.entity.User;
 @Transactional
 public class UserService {
 
-    public static final int USERS_PER_PAGE = 5;
+    // Number of entries to display per page
+    public static final int USERS_PER_PAGE = 4;
 
     @Autowired
     private UserRepository userRepo;
@@ -44,9 +45,10 @@ public class UserService {
 
         if (keyword != null) {
             return userRepo.findAll(keyword, pageable);
+        } else {
+            return userRepo.findAll(pageable);
         }
 
-        return userRepo.findAll(pageable);
     }
 
     public List<Role> listRows() {
