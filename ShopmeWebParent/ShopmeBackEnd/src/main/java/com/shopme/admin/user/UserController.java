@@ -20,6 +20,8 @@ import com.shopme.admin.FileUploadUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Controller
 public class UserController {
 
@@ -29,12 +31,15 @@ public class UserController {
 	@GetMapping("/users")
 	public String listFirstPage(Model model) {
 		// returns the 1st page of pagination api
-		return listByPage(1, model, "firstName", "asc", null);
+		// default sorting is done by id column, can be changed here
+		return listByPage(1, model, "id", "asc", null);
 	}
 
 	@GetMapping("/users/page/{pageNum}")
 	public String listByPage(@PathVariable(name = "pageNum") Integer pageNum, Model model,
-			@Param("sortField") String sortField, @Param("sortDir") String sortDir, @Param("keyword") String keyword) {
+			@Param("sortField") String sortField, 
+			@Param("sortDir") String sortDir, 
+			@Param("keyword") String keyword) {
 
 		Page<User> page = service.listByPage(pageNum, sortField, sortDir, keyword);
 		List<User> listUsers = page.getContent();
@@ -149,5 +154,13 @@ public class UserController {
 		redirectAttributes.addFlashAttribute("message", message);
 
 		return "redirect:/users";
+	}
+
+	@GetMapping("/users/export/csv")
+	public void exportToCSV(HttpServletResponse response) throws IOException {
+
+		List<User> listUsers = service.listAll();
+		UserCsvExporter exporter = new UserCsvExporter();
+		exporter.export(listUsers, response);
 	}
 }
