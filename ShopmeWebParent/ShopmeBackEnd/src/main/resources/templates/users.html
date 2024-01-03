@@ -103,30 +103,34 @@
 	   </form>
 	</div>
 
-	<div>
+	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
 					<!-- User ID -->
-					<th th:replace="fragments :: column_link('id', 'USER ID')"/>
-
+					<th class="hideable-column">
+						<th th:replace="fragments :: column_link('id', 'User ID', 'tag')"/>
+					</th>
+					
 					<!-- Photos -->
 					<th>Photos</th>
 
 					<!-- First Name -->
-					<th th:replace="fragments :: column_link('firstName', 'First Name')"/>
+					<th th:replace="fragments :: column_link('firstName', 'First Name', 'none')"/>
 
 					<!-- Last Name -->
-					<th th:replace="fragments :: column_link('lastName', 'Last Name')"/>
+					<th th:replace="fragments :: column_link('lastName', 'Last Name', 'none')"/>
 
 					<!-- Email -->
-					<th th:replace="fragments :: column_link('email', 'Email')"/>
+					<th class="hideable-column">
+						<th th:replace="fragments :: column_link('email', 'Email', 'tag')"/>
+					</th>
 					
 					<!-- Roles -->
 					<th>Roles</th>
 
 					<!-- Enabled -->
-					<th th:replace="fragments :: column_link('enabled', 'Enabled')"/>
+					<th th:replace="fragments :: column_link('enabled', 'Enabled', 'none')"/>
 					
 					<!-- Edit & Delete -->
 					<th></th>
@@ -134,14 +138,14 @@
 			</thead>
 			<tbody>
 				<tr th:each="user : ${listUsers}">
-					<td>[[${user.id}]]</td>
+					<td class="hideable-column">[[${user.id}]]</td>
 					<td>
 						<span th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></span>
 						<img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px; height: 100px;" />
 					</td>
 					<td>[[${user.firstName}]]</td>
 					<td>[[${user.lastName}]]</td>
-					<td>[[${user.email}]]</td>
+					<td class="hideable-column">[[${user.email}]]</td>
 					<td>[[${user.roles}]]</td>
 					<td>
 						<a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
@@ -160,6 +164,34 @@
 			</tbody>
 		</table>
 	</div>
+	
+	<!-- Form with less details -->
+	<div class="less-details">
+		<div th:each="user : ${listUsers}" class="row m-1">
+			<div class="col-4">
+				<span th:if="${user.photos == null}" class="fas fa-portrait fa-2x icon-silver"></span>
+				<img th:if="${user.photos != null}" th:src="@{${user.photosImagePath}}" style="width: 100px; height: 100px;" />
+			</div>
+			<div>&nbsp;</div>
+			<div class="col-6">
+				<div>[[${user.fullName}]]</div>
+				<div>[[${user.roles}]]</div>
+				<div class="mt-2">
+					<a th:if="${user.enabled == true}" class="fas fa-check-circle fa-2x icon-green"
+							th:href="@{'/users/' + ${user.id} + '/enabled/false'}" title="Disable this user"> </a>
+					<a th:if="${user.enabled == false}" class="fas fa-circle-xmark fa-2x icon-dark"
+							th:href="@{'/users/' + ${user.id} + '/enabled/true'}" title="Enable this user"> </a>
+					&nbsp;
+					<a class="fa-solid fa-pen-to-square fa-2x icon-green" th:href="@{'/users/edit/' + ${user.id}}"
+							title="Edit this user"> </a>
+					&nbsp;
+					<a class="fa-solid fa-trash fa-2x icon-dark link-delete" th:href="@{'/users/delete/' + ${user.id}}"
+							th:userId="${user.id}" title="Delete this user"> </a>
+				</div>
+			</div>
+			<div>&nbsp;</div>
+		</div>
+	</div>
 
 	<!-- Pagination Begins -->
 	<div class="text-center m-1" th:if="${totalItems > 0}">
@@ -171,7 +203,7 @@
 
 	<div th:if="${totalPages > 1}">
 		<nav>
-			<ul class="pagination justify-content-center">
+			<ul class="pagination justify-content-center flex-wrap">
 				<li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
 					<a th:replace="fragments :: page_link(1, 'First')"></a>
 				</li>
