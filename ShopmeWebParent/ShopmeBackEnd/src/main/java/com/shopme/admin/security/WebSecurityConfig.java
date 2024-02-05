@@ -33,6 +33,7 @@ public class WebSecurityConfig {
                               .and()
                               .formLogin(formLogin -> formLogin
 		                              .loginPage("/login")
+		                              .usernameParameter("email")
 		                              .permitAll()
                             		  );  
                         
