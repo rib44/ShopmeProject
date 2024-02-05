@@ -2,17 +2,26 @@ package com.shopme.admin.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
+	
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new ShopmeUserDetailsService();
+	}
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -24,33 +33,38 @@ public class WebSecurityConfig {
 //        
 //        return http.build();
 //    }
+    
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+    	DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    	authProvider.setUserDetailsService(userDetailsService());
+    	authProvider.setPasswordEncoder(passwordEncoder());
+    	
+    	return authProvider;
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    	http.authorizeHttpRequests((authz) -> {
-                    try {
-                        authz.anyRequest().authenticated()
-                              .and()
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    	
+    	http.authenticationProvider(authenticationProvider());
+    	
+    	http.authorizeHttpRequests(auth -> auth
+    								.anyRequest()
+    								.authenticated()
+                              )
                               .formLogin(formLogin -> formLogin
 		                              .loginPage("/login")
 		                              .usernameParameter("email")
 		                              .permitAll()
-                            		  );  
-                        
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    
-                });
-    	
+                            		  );      	
         
         return http.build();
     }
     
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-//    	ignores theses things from the spring security, so could 
-//    	be displayed / fetched without logging in.
+    WebSecurityCustomizer webSecurityCustomizer() {
+    	// ignores theses things from the spring security, so could 
+    	// be displayed / fetched without logging in.
     	return ((web) -> web.ignoring()
     						.requestMatchers("/images/**", "/js/**", "/webjars/**")
     			);
